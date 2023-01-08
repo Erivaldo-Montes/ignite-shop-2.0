@@ -8,6 +8,8 @@ import { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Stripe from 'stripe'
 import { Handbag } from 'phosphor-react'
+import { shoppingCartContext } from '../contexts/shoppingCartContext'
+import { useContext } from 'react'
 
 interface HomeProps {
   products: {
@@ -27,6 +29,8 @@ export default function Home({ products }: HomeProps) {
       spacing: 48,
     },
   })
+
+  const { addToShoppingCart } = useContext(shoppingCartContext)
 
   return (
     <>
@@ -52,7 +56,12 @@ export default function Home({ products }: HomeProps) {
                     <strong>{product.name}</strong>
                     <span>{product.price}</span>
                   </div>
-                  <button>
+                  <button
+                    onClick={(e) => {
+                      addToShoppingCart(product)
+                      e.preventDefault()
+                    }}
+                  >
                     <Handbag size={32} />
                   </button>
                 </footer>

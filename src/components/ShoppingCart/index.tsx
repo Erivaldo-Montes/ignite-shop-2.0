@@ -2,19 +2,24 @@ import { shoppingCartContext } from '../../contexts/shoppingCartContext'
 import { Container, ShoppingCartList, Table } from './styles'
 import { X } from 'phosphor-react'
 import { ShoppingCartOrder } from '../ShoppingCartOrder'
-import { useContextSelector } from 'use-context-selector'
+import { useContext, useEffect, useState } from 'react'
 
 export function ShoppingCart() {
-  const isOpen = useContextSelector(shoppingCartContext, (context) => {
-    return context.isOpen
-  })
+  const { togleSidebarOpen, isOpen, shoppingCart } =
+    useContext(shoppingCartContext)
+  const [totalPriceShoppingCart, setTotalPriceShoppingCart] = useState(0)
 
-  const togleSidebarOpen = useContextSelector(
-    shoppingCartContext,
-    (context) => {
-      return context.togleSidebarOpen
-    },
-  )
+  useEffect(() => {
+    const totalPrice = shoppingCart.reduce((acc, current) => {
+      const priceFormat = current.price
+        .replace(/[^\d,]+/g, '')
+        .replace(',', '.')
+
+      return acc + Number(priceFormat)
+    }, 0)
+
+    setTotalPriceShoppingCart(totalPrice)
+  }, [shoppingCart])
 
   return (
     <Container variant={isOpen}>
@@ -26,9 +31,17 @@ export function ShoppingCart() {
         <span>sacola de compras</span>
         <div>
           <ShoppingCartList>
-            <ShoppingCartOrder />
-            <ShoppingCartOrder />
-            <ShoppingCartOrder />
+            {shoppingCart.map((order) => {
+              return (
+                <ShoppingCartOrder
+                  key={order.id}
+                  idOrder={order.id}
+                  imageUrl={order.imageUrl}
+                  name={order.name}
+                  price={order.price}
+                />
+              )
+            })}
           </ShoppingCartList>
 
           <div>
@@ -36,11 +49,16 @@ export function ShoppingCart() {
               <tbody>
                 <tr>
                   <td>Quantidades</td>
-                  <td>3 items</td>
+                  <td>{shoppingCart.length} items</td>
                 </tr>
                 <tr>
                   <td>Valor total</td>
-                  <td>R$ 340,00</td>
+                  <td>
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    }).format(totalPriceShoppingCart)}
+                  </td>
                 </tr>
               </tbody>
             </Table>

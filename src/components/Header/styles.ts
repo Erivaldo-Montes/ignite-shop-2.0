@@ -8,15 +8,29 @@ export const Header = styled('header', {
 
   display: 'flex',
   justifyContent: 'space-between',
+})
 
-  span: {
-    padding: '0.75rem',
-    background: '$gray800',
-    borderRadius: 6,
-    cursor: 'pointer',
+export const ShoopingCartIcon = styled('span', {
+  variants: {
+    variantSpan: {
+      empty: {
+        color: 'Red',
+      },
 
-    svg: {
-      color: '#8D8D99',
+      full: {
+        '& > svg': {
+          color: 'Blue',
+        },
+      },
     },
+  },
+
+  padding: '0.75rem',
+  background: '$gray800',
+  borderRadius: 6,
+  cursor: 'pointer',
+
+  svg: {
+    color: '#8D8D99',
   },
 })

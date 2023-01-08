@@ -10,7 +10,6 @@ import {
   ProductContainer,
   ProductDetails,
 } from '../../styles/pages/products'
-import { useShoppingContext } from '../../contexts/shoppingCartContext'
 
 interface ProductProps {
   product: {
@@ -27,9 +26,6 @@ export default function Product({ product }: ProductProps) {
   const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] =
     useState(false)
 
-  const { isOpen } = useShoppingContext()
-  console.log(isOpen)
-
   async function handleBuyProduct() {
     // conectar a uma ferramenta de observabilidade( datalog/ sentry)
     try {
@@ -40,8 +36,6 @@ export default function Product({ product }: ProductProps) {
       })
 
       const { checkoutUrl } = response.data
-
-      console.log(checkoutUrl)
 
       window.location.href = checkoutUrl
 

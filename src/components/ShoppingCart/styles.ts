@@ -14,12 +14,12 @@ export const Container = styled('div', {
     variant: {
       OPEN: {
         right: 0,
-        transition: 'all 200ms',
+        transition: 'all 200ms cubic-bezier(0.765, 0.105, 0.290, 0.915)',
       },
 
       CLOSED: {
         right: '-30rem',
-        transition: 'all 200ms',
+        transition: 'all 200ms cubic-bezier(0.765, 0.105, 0.290, 0.915)',
       },
     },
   },
@@ -74,6 +74,7 @@ export const Container = styled('div', {
 
 export const ShoppingCartList = styled('div', {
   display: 'flex',
+
   flexDirection: 'column',
   gap: '1.5rem',
   marginTop: '1.5rem',
