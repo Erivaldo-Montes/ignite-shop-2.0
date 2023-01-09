@@ -1,23 +1,25 @@
-import Image from 'next/image'
-import Head from 'next/head'
-import { HomeContainer, Product } from '../styles/pages/home'
-import { useKeenSlider } from 'keen-slider/react'
-import 'keen-slider/keen-slider.min.css'
-import { stripe } from '../lib/stripe'
-import { GetStaticProps } from 'next'
-import Link from 'next/link'
-import Stripe from 'stripe'
-import { Handbag } from 'phosphor-react'
-import { shoppingCartContext } from '../contexts/shoppingCartContext'
-import { useContext } from 'react'
+import Image from "next/image";
+import Head from "next/head";
+import { HomeContainer, Product } from "../styles/pages/home";
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
+import { stripe } from "../lib/stripe";
+import { GetStaticProps } from "next";
+import Link from "next/link";
+import Stripe from "stripe";
+import { Handbag } from "phosphor-react";
+import { shoppingCartContext } from "../contexts/shoppingCartContext";
+import { useContext } from "react";
+import { HeaderCompenent } from "../components/Header";
 
 interface HomeProps {
   products: {
-    name: string
-    id: string
-    imageUrl: string
-    price: string
-  }[]
+    name: string;
+    id: string;
+    imageUrl: string;
+    price: string;
+    defaultPriceId: string;
+  }[];
 }
 
 export default function Home({ products }: HomeProps) {
@@ -28,15 +30,17 @@ export default function Home({ products }: HomeProps) {
       perView: 2.5,
       spacing: 48,
     },
-  })
+  });
 
-  const { addToShoppingCart } = useContext(shoppingCartContext)
+  const { addToShoppingCart } = useContext(shoppingCartContext);
 
   return (
     <>
       <Head>
         <title>Home | ignite shop</title>
       </Head>
+
+      <HeaderCompenent />
 
       <HomeContainer ref={sliderRef}>
         {products.map((product) => {
@@ -58,8 +62,8 @@ export default function Home({ products }: HomeProps) {
                   </div>
                   <button
                     onClick={(e) => {
-                      addToShoppingCart(product)
-                      e.preventDefault()
+                      addToShoppingCart(product);
+                      e.preventDefault();
                     }}
                   >
                     <Handbag size={32} />
@@ -67,37 +71,38 @@ export default function Home({ products }: HomeProps) {
                 </footer>
               </Product>
             </Link>
-          )
+          );
         })}
       </HomeContainer>
     </>
-  )
+  );
 }
 
 // aplicando conceito de ssg, em vez de ssr
 export const getStaticProps: GetStaticProps = async () => {
   const reponse = await stripe.products.list({
     // como a resposta vem apenas o relacionamanto entre o preço e o produto temos que expandir a resposta
-    expand: ['data.default_price'],
-  })
+    expand: ["data.default_price"],
+  });
 
   const products = reponse.data.map((product) => {
-    const price = product.default_price as Stripe.Price
+    const price = product.default_price as Stripe.Price;
 
     return {
       id: product.id,
       imageUrl: product.images[0],
       name: product.name,
       // stripe salva o preço em centavos
-      price: new Intl.NumberFormat('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
+      price: new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
       }).format(price.unit_amount! / 100),
-    }
-  })
+      defaultPriceId: price.id,
+    };
+  });
 
   return {
     props: { products },
     revalidate: 60 * 60 * 2, // 2 horas
-  }
-}
+  };
+};

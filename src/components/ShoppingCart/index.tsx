@@ -1,30 +1,45 @@
-import { shoppingCartContext } from '../../contexts/shoppingCartContext'
-import { Container, ShoppingCartList, Table } from './styles'
-import { X } from 'phosphor-react'
-import { ShoppingCartOrder } from '../ShoppingCartOrder'
-import { useContext, useEffect, useState } from 'react'
+import { shoppingCartContext } from "../../contexts/shoppingCartContext";
+import { Container, ShoppingCartList, Table } from "./styles";
+import { X } from "phosphor-react";
+import { ShoppingCartOrder } from "../ShoppingCartOrder";
+import { useContext, useEffect, useState } from "react";
 
 export function ShoppingCart() {
-  const { togleSidebarOpen, isOpen, shoppingCart } =
-    useContext(shoppingCartContext)
-  const [totalPriceShoppingCart, setTotalPriceShoppingCart] = useState(0)
+  const {
+    togleSidebarOpen,
+    isOpen,
+    shoppingCart,
+    buyProduct,
+    isCreatingCheckoutSession,
+  } = useContext(shoppingCartContext);
+  const [totalPriceShoppingCart, setTotalPriceShoppingCart] = useState(0);
+
+  async function handleBuyProduct() {
+    buyProduct();
+  }
 
   useEffect(() => {
     const totalPrice = shoppingCart.reduce((acc, current) => {
       const priceFormat = current.price
-        .replace(/[^\d,]+/g, '')
-        .replace(',', '.')
+        .replace(/[^\d,]+/g, "")
+        .replace(",", ".");
 
-      return acc + Number(priceFormat)
-    }, 0)
+      return acc + Number(priceFormat);
+    }, 0);
 
-    setTotalPriceShoppingCart(totalPrice)
-  }, [shoppingCart])
+    setTotalPriceShoppingCart(totalPrice);
+  }, [shoppingCart]);
+
+  const isDisable = isCreatingCheckoutSession
+    ? true
+    : shoppingCart.length === 0
+    ? true
+    : false;
 
   return (
     <Container variant={isOpen}>
-      <span onClick={togleSidebarOpen}>
-        <X size={24} />
+      <span>
+        <X size={24} onClick={togleSidebarOpen} />
       </span>
 
       <div>
@@ -40,7 +55,7 @@ export function ShoppingCart() {
                   name={order.name}
                   price={order.price}
                 />
-              )
+              );
             })}
           </ShoppingCartList>
 
@@ -54,18 +69,20 @@ export function ShoppingCart() {
                 <tr>
                   <td>Valor total</td>
                   <td>
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL',
+                    {new Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
                     }).format(totalPriceShoppingCart)}
                   </td>
                 </tr>
               </tbody>
             </Table>
-            <button>Finalizar compra</button>
+            <button onClick={handleBuyProduct} disabled={isDisable}>
+              Finalizar compra
+            </button>
           </div>
         </div>
       </div>
     </Container>
-  )
+  );
 }

@@ -1,36 +1,55 @@
-import { styled } from '@stitches/react'
+import { styled } from "@stitches/react";
 
-export const Header = styled('header', {
-  padding: '2rem 0',
-  width: '100%',
+export const Header = styled("header", {
+  padding: "2rem 0",
+  width: "100%",
   maxWidth: 1100,
-  margin: '0 auto',
+  margin: "0 auto",
 
-  display: 'flex',
-  justifyContent: 'space-between',
-})
+  display: "flex",
+  justifyContent: "space-between",
+});
 
-export const ShoopingCartIcon = styled('span', {
+export const ShoopingCartIcon = styled("span", {
   variants: {
     variantSpan: {
       empty: {
-        color: 'Red',
+        svg: {
+          color: "#8D8D99",
+        },
       },
 
       full: {
-        '& > svg': {
-          color: 'Blue',
+        "& > svg": {
+          color: "$gray300",
         },
       },
     },
   },
 
-  padding: '0.75rem',
-  background: '$gray800',
+  padding: "0.75rem",
+  background: "$gray800",
   borderRadius: 6,
-  cursor: 'pointer',
+  cursor: "pointer",
+  position: "relative",
 
-  svg: {
-    color: '#8D8D99',
+  span: {
+    position: "absolute",
+    right: "-0.5rem",
+    top: "-0.5rem",
+
+    background: "$green500",
+    fontSize: "0.875rem",
+    fontWeight: "bold",
+    borderRadius: "50%",
+    boxShadow: "0px 0px 0px 3px $colors$gray900",
+    padding: "0.5rem",
+    lineHeight: "160%",
+    width: "1.5rem",
+    height: "1.5rem",
+
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
-})
+});

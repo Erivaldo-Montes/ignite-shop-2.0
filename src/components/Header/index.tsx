@@ -18,7 +18,6 @@ export function HeaderCompenent() {
     });
   }, [shoppingCart]);
 
-  console.log(shoppingCartVariant);
   return (
     <Header>
       <Image src={logoImg} alt="" />
@@ -27,6 +26,9 @@ export function HeaderCompenent() {
         onClick={togleSidebarOpen}
         variantSpan={shoppingCartVariant}
       >
+        {shoppingCartVariant === "empty" ? null : (
+          <span>{shoppingCart.length}</span>
+        )}
         <Handbag size={24} />
       </ShoopingCartIcon>
 
